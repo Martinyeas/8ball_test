@@ -31,6 +31,7 @@ holenum = [[0,0],[w-holew,0],[0,h-holeh],[w-holew,h-holeh],[0,h/2-holeh],[w-hole
 golok_szam = 3
 lendulet_sum = 0
 lendulet_sum_chng = 0
+vonalw = 5
 
 balls = []
 for i in range(golok_szam):
@@ -42,6 +43,7 @@ for i in range(golok_szam):
             xpos,ypos = random.randint(0+((golox/2)+1),w-((golox/2)+1)),random.randint(0+((goloy/2)+1),h-((goloy/2)+1))
     balls.append(ball([xpos,ypos],(random.randint(0,255),random.randint(0,255),random.randint(0,255)), [random.randint(-200,200)/100,random.randint(-200,200)/100],defa_mass))
 
+holding_mouse = False
 clickpos = None
 running = True
 font = pygame.font.Font("freesansbold.ttf", 72)
@@ -55,12 +57,16 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
+            holding_mouse = True
             clickpos = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONUP:
+            holding_mouse = False
             uppos = pygame.mouse.get_pos()
             magn = pygame.Vector2(clickpos[0]-uppos[0],clickpos[1]-uppos[1])
             balls.append(ball([clickpos[0],clickpos[1]],(random.randint(0,255),random.randint(0,255),random.randint(0,255)), [magn[0]/25,magn[1]/25],defa_mass))
             clickpos = None
+    if holding_mouse:
+        pygame.draw.line(wind,(255,255,255),(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1]),(clickpos[0],clickpos[1]),vonalw)
     lendulet_sum_chng = 0
     for i in balls:
         lendulet_sum_chng += abs(i.lendulet[0]) + abs(i.lendulet[1])
