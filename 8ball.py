@@ -86,7 +86,11 @@ while running:
                 if rect.colliderect(brect):
                     # b.lendulet = [i.lendulet[0],i.lendulet[1]]
                     # i.lendulet = [-b.lendulet[0]*coll_diff,-b.lendulet[1]*coll_diff]
-                    collision_normal = pygame.Vector2(i.pos[0] - b.pos[0], i.pos[1] - b.pos[1]).normalize()
+                    collision_normal = None
+                    if not i.pos[0] == 0 or not b.pos[0] == 0 or not i.pos[1] == 0 or not b.pos[1] == 0:
+                        collision_normal = pygame.Vector2(i.pos[0] - b.pos[0], i.pos[1] - b.pos[1]).normalize()
+                    else:
+                        collision_normal = 1
                     relative_velocity = pygame.Vector2(i.lendulet[0] - b.lendulet[0], i.lendulet[1] - b.lendulet[1])
                     impulse = 2 * pygame.Vector2.dot(relative_velocity, collision_normal) / (i.mass + b.mass) * collision_normal
                     i.lendulet -= impulse * b.mass
