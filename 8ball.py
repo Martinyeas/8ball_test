@@ -17,7 +17,7 @@ coll_diff = 60
 coll_diff = coll_diff / 100
 golox,goloy = 20,20
 golor = golox / 1.5
-surlodas = 0.999
+surlodas = .999
 defa_mass = 1
 print("surlodas: ",surlodas)
 sizemultiplier = 3
@@ -42,6 +42,7 @@ for i in range(golok_szam):
             xpos,ypos = random.randint(0+((golox/2)+1),w-((golox/2)+1)),random.randint(0+((goloy/2)+1),h-((goloy/2)+1))
     balls.append(ball([xpos,ypos],(random.randint(0,255),random.randint(0,255),random.randint(0,255)), [random.randint(-200,200)/100,random.randint(-200,200)/100],defa_mass))
 
+clickpos = None
 running = True
 font = pygame.font.Font("freesansbold.ttf", 72)
 text = font.render('NUM', True,(255,255,255))
@@ -54,7 +55,12 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            balls.append(ball([pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1]],(random.randint(0,255),random.randint(0,255),random.randint(0,255)), [random.randint(-200,200)/20,random.randint(-200,200)/20],defa_mass))
+            clickpos = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONUP:
+            uppos = pygame.mouse.get_pos()
+            magn = pygame.Vector2(clickpos[0]-uppos[0],clickpos[1]-uppos[1])
+            balls.append(ball([clickpos[0],clickpos[1]],(random.randint(0,255),random.randint(0,255),random.randint(0,255)), [magn[0]/25,magn[1]/25],defa_mass))
+            clickpos = None
     lendulet_sum_chng = 0
     for i in balls:
         lendulet_sum_chng += abs(i.lendulet[0]) + abs(i.lendulet[1])
