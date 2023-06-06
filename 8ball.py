@@ -27,11 +27,13 @@ wind = pygame.display.set_mode((w,h))
 pygame.display.set_caption("NIGGERS")
 holew,holeh = 24,24
 holecolor = (0,0,0)
-holenum = [[0,0],[w-holew,0],[0,h-holeh],[w-holew,h-holeh],[0,h/2-holeh],[w-holew,h/2-holeh]]
-golok_szam = 3
+holenum = [[0,0,holecolor],[w-holew,0,holecolor],[0,h-holeh,holecolor],[w-holew,h-holeh,holecolor],[0,h/2-holeh,holecolor],[w-holew,h/2-holeh,holecolor]]
+golok_szam = 0
 lendulet_sum = 0
 lendulet_sum_chng = 0
 vonalw = 5
+hole_detection_dist = 23
+balls_NUM = golok_szam
 
 balls = []
 for i in range(golok_szam):
@@ -67,14 +69,19 @@ while running:
             clickpos = None
     if holding_mouse:
         pygame.draw.line(wind,(255,255,255),(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1]),(clickpos[0],clickpos[1]),vonalw)
-    lendulet_sum_chng = 0
+    #lendulet_sum_chng = 0
+    balls_NUM = 0
     for i in balls:
-        lendulet_sum_chng += abs(i.lendulet[0]) + abs(i.lendulet[1])
+        balls_NUM += 1
+        #lendulet_sum_chng += abs(i.lendulet[0]) + abs(i.lendulet[1])
         i.pos[0] += i.lendulet[0] / 10
         i.pos[1] += i.lendulet[1] / 10
         i.lendulet[0] *= surlodas
         i.lendulet[1] *= surlodas
         rect = pygame.draw.circle(wind,(i.szin),(i.pos),golor)
+        for hole in holenum:
+            if pygame.Vector2(i.pos[0] - hole[0],i.pos[1] - hole[1]).magnitude() <= hole_detection_dist:
+                balls.remove(i)
         if rect.right >= w or rect.left <= 0:
             i.lendulet[0] = -i.lendulet[0]
         if rect.bottom >= h or rect.top <= 0:
@@ -103,10 +110,10 @@ while running:
                         i.pos[1] += separation_vector[1]
                         b.pos[0] -= separation_vector[0]
                         b.pos[1] -= separation_vector[1]
-    if lendulet_sum_chng != lendulet_sum:
-        lendulet_sum = lendulet_sum_chng
-        text = font.render(str(lendulet_sum), True,(255,255,255))
-        wind.blit(text, textRect)
+    #if lendulet_sum_chng != lendulet_sum:
+        #lendulet_sum = lendulet_sum_chng
+    text = font.render(str(balls_NUM), True,(255,255,255))
+    wind.blit(text, textRect)
     for hole in holenum:
-        pygame.draw.rect(wind,(holecolor),(hole[0],hole[1],holew,holeh),0,10)
+        pygame.draw.rect(wind,(hole[2]),(hole[0],hole[1],holew,holeh),0,10)
     pygame.display.flip()
